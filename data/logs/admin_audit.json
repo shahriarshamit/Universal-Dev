@@ -1,0 +1,24 @@
+[
+  {
+    "id": "audit_1795522338982_moqn6",
+    "timestamp": "2026-11-24T12:12:18.982Z",
+    "level": "INFO",
+    "source": "License",
+    "message": "Verified license UDEV-PRO-2026-94F1 (Pro) -> ACTIVE"
+  },
+  {
+    "id": "audit_1795522338944_x7711",
+    "timestamp": "2026-11-24T12:12:18.944Z",
+    "level": "INFO",
+    "source": "ClientAPI",
+    "message": "PySide6 client bootstrap (0.6.5 · windows) -> ALLOWED",
+    "detail": "license=valid, update_required=false, maintenance=false"
+  },
+  {
+    "id": "audit_boot_1",
+    "timestamp": "2026-11-24T12:12:11.355Z",
+    "level": "INFO",
+    "source": "Manifest",
+    "message": "Master Admin Registry initialized (manifest_version 2 · api_version 1)."
+  }
+]

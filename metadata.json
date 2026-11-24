@@ -1,0 +1,6 @@
+{
+  "name": "Universal Dev",
+  "description": "Unified multi-stack local development environment, managed SDK orchestrator, and manifest control plane for PHP, Node.js, Python, and Flutter.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
