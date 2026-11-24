@@ -1,6 +1,7 @@
 export type SdkId = 'php' | 'node' | 'python' | 'flutter' | 'git' | 'composer';
 export type EcosystemId = 'php' | 'node' | 'python' | 'flutter';
 export type AdminPageId = 'overview' | 'releases' | 'templates' | 'licensing' | 'logs';
+export type AppRouteView = 'landing' | 'login' | 'admin';
 
 export type VersionStatus = 'supported' | 'deprecated' | 'beta' | 'preview' | 'nightly' | 'unsupported';
 export type VersionChannel = 'stable' | 'lts' | 'beta' | 'nightly';
@@ -178,6 +179,22 @@ export interface LicenseVerifyResponse {
   offline_grace_days: number;
   expires_at: string | null;
   verified_at: string;
+}
+
+export interface AuthStatus {
+  configured: boolean;
+  source: 'env' | 'claimed' | 'unconfigured';
+}
+
+export interface AuthSession {
+  token: string;
+  expires_at: string;
+}
+
+export interface PublicPortalSummary {
+  manifest: ManifestDocument;
+  templates: TemplateCatalog;
+  tools: ToolCatalog;
 }
 
 export interface AdminPortalState {

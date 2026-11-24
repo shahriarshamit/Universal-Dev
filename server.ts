@@ -10,6 +10,12 @@ import type {
   ManifestSdkVersion,
   SdkId,
 } from './src/types.ts';
+import {
+  claimInitialAdminPasscode,
+  getAuthStatus,
+  verifyAdminPasscode,
+  verifySessionToken,
+} from './server/auth.ts';
 import { MasterAdminStore } from './server/store.ts';
 
 const PORT = 3000;
@@ -55,6 +61,52 @@ app.post('/api/v1/license/verify', (req, res) => {
   } catch (err) {
     res.status(400).json({ error: err instanceof Error ? err.message : 'License verification failed' });
   }
+});
+
+// --- Public Landing Page Summary ---
+
+app.get('/api/public/summary', (_req, res) => {
+  res.json({
+    manifest: store.getManifest(),
+    templates: store.getTemplates(),
+    tools: store.getTools(),
+  });
+});
+
+// --- Master Admin Authentication ---
+
+app.get('/api/auth/status', (_req, res) => {
+  res.json(getAuthStatus());
+});
+
+app.post('/api/auth/setup', (req, res) => {
+  try {
+    const { passcode } = req.body as { passcode?: string };
+    const session = claimInitialAdminPasscode(passcode || '');
+    res.json(session);
+  } catch (err) {
+    res.status(400).json({ error: err instanceof Error ? err.message : 'Setup failed' });
+  }
+});
+
+app.post('/api/auth/login', (req, res) => {
+  try {
+    const { passcode } = req.body as { passcode?: string };
+    const session = verifyAdminPasscode(passcode || '');
+    res.json(session);
+  } catch (err) {
+    res.status(401).json({ error: err instanceof Error ? err.message : 'Authentication failed' });
+  }
+});
+
+app.use('/api/admin', (req, res, next) => {
+  const header = req.headers.authorization || '';
+  const token = header.startsWith('Bearer ') ? header.slice(7).trim() : '';
+  if (!verifySessionToken(token)) {
+    res.status(401).json({ error: 'Admin authentication required.' });
+    return;
+  }
+  next();
 });
 
 // --- Master Admin Control Plane APIs ---

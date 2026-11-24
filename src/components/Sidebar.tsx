@@ -1,8 +1,10 @@
 import {
+  ArrowUpRight,
   Boxes,
   FileCode2,
   Globe,
   KeyRound,
+  LogOut,
   ScrollText,
   X,
 } from 'lucide-react';
@@ -25,6 +27,8 @@ interface SidebarProps {
   latestClientVersion: string;
   mobileOpen: boolean;
   onCloseMobile: () => void;
+  onOpenLanding: () => void;
+  onSignOut: () => void;
 }
 
 export function Sidebar({
@@ -34,6 +38,8 @@ export function Sidebar({
   latestClientVersion,
   mobileOpen,
   onCloseMobile,
+  onOpenLanding,
+  onSignOut,
 }: SidebarProps) {
   const sections: Array<'Portal' | 'Catalogs' | 'Governance'> = ['Portal', 'Catalogs', 'Governance'];
 
@@ -45,9 +51,16 @@ export function Sidebar({
   const navContent = (
     <div className="flex h-full flex-col bg-[var(--bg-surface)] border-r border-[var(--border-hairline)]">
       <div className="flex items-center justify-between h-14 px-5 border-b border-[var(--border-hairline)] shrink-0">
-        <span className="font-display text-base font-semibold tracking-tight text-[var(--text-primary)] whitespace-nowrap">
+        <button
+          type="button"
+          onClick={() => {
+            onOpenLanding();
+            onCloseMobile();
+          }}
+          className="font-display text-base font-semibold tracking-tight text-[var(--text-primary)] whitespace-nowrap hover:text-[var(--accent)] transition-colors"
+        >
           Universal Dev
-        </span>
+        </button>
         <button
           type="button"
           onClick={onCloseMobile}
@@ -92,10 +105,36 @@ export function Sidebar({
         })}
       </nav>
 
-      <div className="px-4 py-3 border-t border-[var(--border-hairline)] text-xs text-[var(--text-muted)]">
-        <div className="truncate font-medium text-[var(--text-secondary)]">Master Admin Control Plane</div>
-        <div className="mt-0.5 truncate tabular-nums">
-          Manifest v{manifestVersion} · Client v{latestClientVersion}
+      <div className="px-4 py-3 border-t border-[var(--border-hairline)] text-xs text-[var(--text-muted)] space-y-2.5">
+        <div>
+          <div className="truncate font-medium text-[var(--text-secondary)]">Master Admin Control Plane</div>
+          <div className="mt-0.5 truncate tabular-nums">
+            Manifest v{manifestVersion} · Client v{latestClientVersion}
+          </div>
+        </div>
+        <div className="flex items-center justify-between gap-2 pt-1 border-t border-[var(--border-hairline)]">
+          <button
+            type="button"
+            onClick={() => {
+              onOpenLanding();
+              onCloseMobile();
+            }}
+            className="inline-flex items-center gap-1 text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+          >
+            <span>Public Site</span>
+            <ArrowUpRight className="w-3 h-3" />
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              onSignOut();
+              onCloseMobile();
+            }}
+            className="inline-flex items-center gap-1 text-xs font-medium text-[var(--text-secondary)] hover:text-red-400"
+          >
+            <LogOut className="w-3 h-3" />
+            <span>Sign Out</span>
+          </button>
         </div>
       </div>
     </div>

@@ -72,6 +72,10 @@ export default defineConfig(({command}) => {
           emitCatalog('manifest.json', createDefaultManifest());
           emitCatalog('templates.json', createDefaultTemplates());
           emitCatalog('tools.json', createDefaultTools());
+
+          const docsDir = path.resolve(__dirname, 'docs');
+          fs.rmSync(docsDir, {recursive: true, force: true});
+          fs.cpSync(distDir, docsDir, {recursive: true, force: true});
         },
       },
     ],

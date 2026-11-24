@@ -1,5 +1,19 @@
 [
   {
+    "id": "audit_1795524567813_p4ouk",
+    "timestamp": "2026-11-24T12:49:27.813Z",
+    "level": "INFO",
+    "source": "License",
+    "message": "Verified license UDEV-PRO-2026-94F1 (Pro) -> ACTIVE"
+  },
+  {
+    "id": "audit_1795524540012_a2lrc",
+    "timestamp": "2026-11-24T12:49:00.012Z",
+    "level": "WARN",
+    "source": "License",
+    "message": "License check failed (not found): UDEV-PRO-2026-8841"
+  },
+  {
     "id": "audit_1795522338982_moqn6",
     "timestamp": "2026-11-24T12:12:18.982Z",
     "level": "INFO",

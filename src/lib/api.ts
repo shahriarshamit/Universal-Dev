@@ -3,6 +3,8 @@ import type {
   AuditLogEntry,
   AuditLogLevel,
   AuditLogSource,
+  AuthSession,
+  AuthStatus,
   ClientBootstrapResponse,
   EcosystemId,
   LicenseRecord,
@@ -11,6 +13,7 @@ import type {
   ManifestDocument,
   ManifestLicensePolicy,
   ManifestSdkVersion,
+  PublicPortalSummary,
   SdkId,
   TemplateCatalog,
 } from '../types';
@@ -24,8 +27,10 @@ import {
 } from './defaultCatalogs';
 
 const STORAGE_KEY = 'universal_dev_admin_state_v1';
+const STATIC_VERIFIER_KEY = 'universal_dev_admin_verifier_v1';
 
 let detectedStaticMode: boolean | null = null;
+let memoryToken: string | null = null;
 
 function loadLocalState(): AdminPortalState {
   if (typeof window !== 'undefined') {
@@ -81,9 +86,39 @@ function appendLocalLog(
   state.logs = [entry, ...state.logs].slice(0, 300);
 }
 
+async function deriveWebCryptoHash(passcode: string, saltHex: string): Promise<string> {
+  const enc = new TextEncoder();
+  const keyMaterial = await window.crypto.subtle.importKey(
+    'raw',
+    enc.encode(passcode),
+    { name: 'PBKDF2' },
+    false,
+    ['deriveBits'],
+  );
+  const saltBytes = new Uint8Array(
+    saltHex.match(/.{1,2}/g)?.map((b) => Number.parseInt(b, 16)) || [],
+  );
+  const bits = await window.crypto.subtle.deriveBits(
+    { name: 'PBKDF2', salt: saltBytes, iterations: 100000, hash: 'SHA-256' },
+    keyMaterial,
+    256,
+  );
+  return Array.from(new Uint8Array(bits))
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('');
+}
+
 async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
+  const authHeaders: Record<string, string> = {};
+  if (memoryToken) {
+    authHeaders.Authorization = `Bearer ${memoryToken}`;
+  }
   const res = await fetch(url, {
-    headers: { 'Content-Type': 'application/json', ...(init?.headers || {}) },
+    headers: {
+      'Content-Type': 'application/json',
+      ...authHeaders,
+      ...(init?.headers || {}),
+    },
     ...init,
   });
   const contentType = res.headers.get('content-type') || '';
@@ -99,6 +134,14 @@ async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
 
 export function isStaticPagesMode(): boolean {
   return detectedStaticMode === true;
+}
+
+export function hasActiveSession(): boolean {
+  return Boolean(memoryToken);
+}
+
+export function clearSessionToken(): void {
+  memoryToken = null;
 }
 
 export function formatBytes(bytes: number): string {
@@ -117,15 +160,111 @@ export function formatTimestamp(iso: string): string {
 }
 
 export const api = {
-  async getAdminState(): Promise<AdminPortalState> {
+  async getPublicSummary(): Promise<PublicPortalSummary> {
     if (detectedStaticMode !== true) {
       try {
-        const remote = await fetchJson<AdminPortalState>('/api/admin/state');
+        const remote = await fetchJson<PublicPortalSummary>('/api/public/summary');
         detectedStaticMode = false;
         return remote;
       } catch {
         detectedStaticMode = true;
       }
+    }
+    const local = loadLocalState();
+    return {
+      manifest: local.manifest,
+      templates: local.templates,
+      tools: local.tools,
+    };
+  },
+
+  async getAuthStatus(): Promise<AuthStatus> {
+    if (detectedStaticMode !== true) {
+      try {
+        const status = await fetchJson<AuthStatus>('/api/auth/status');
+        detectedStaticMode = false;
+        return status;
+      } catch {
+        detectedStaticMode = true;
+      }
+    }
+    const stored = typeof window !== 'undefined' ? window.localStorage.getItem(STATIC_VERIFIER_KEY) : null;
+    return {
+      configured: Boolean(stored),
+      source: stored ? 'claimed' : 'unconfigured',
+    };
+  },
+
+  async setupAdmin(passcode: string): Promise<AuthSession> {
+    const trimmed = passcode.trim();
+    if (trimmed.length < 8) {
+      throw new Error('Admin passphrase must be at least 8 characters.');
+    }
+    if (!detectedStaticMode) {
+      const session = await fetchJson<AuthSession>('/api/auth/setup', {
+        method: 'POST',
+        body: JSON.stringify({ passcode: trimmed }),
+      });
+      memoryToken = session.token;
+      return session;
+    }
+
+    const existing = window.localStorage.getItem(STATIC_VERIFIER_KEY);
+    if (existing) {
+      throw new Error('Admin passphrase is already configured.');
+    }
+    const saltBytes = window.crypto.getRandomValues(new Uint8Array(16));
+    const salt = Array.from(saltBytes)
+      .map((b) => b.toString(16).padStart(2, '0'))
+      .join('');
+    const hash = await deriveWebCryptoHash(trimmed, salt);
+    window.localStorage.setItem(STATIC_VERIFIER_KEY, JSON.stringify({ salt, hash }));
+
+    const session: AuthSession = {
+      token: `static-${Date.now()}`,
+      expires_at: new Date(Date.now() + 12 * 60 * 60 * 1000).toISOString(),
+    };
+    memoryToken = session.token;
+    return session;
+  },
+
+  async loginAdmin(passcode: string): Promise<AuthSession> {
+    const trimmed = passcode.trim();
+    if (!trimmed) {
+      throw new Error('Enter your admin passphrase.');
+    }
+    if (!detectedStaticMode) {
+      const session = await fetchJson<AuthSession>('/api/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ passcode: trimmed }),
+      });
+      memoryToken = session.token;
+      return session;
+    }
+
+    const raw = window.localStorage.getItem(STATIC_VERIFIER_KEY);
+    if (!raw) {
+      throw new Error('No admin passphrase configured yet.');
+    }
+    const { salt, hash } = JSON.parse(raw) as { salt: string; hash: string };
+    const candidate = await deriveWebCryptoHash(trimmed, salt);
+    if (candidate !== hash) {
+      throw new Error('Invalid admin passphrase.');
+    }
+    const session: AuthSession = {
+      token: `static-${Date.now()}`,
+      expires_at: new Date(Date.now() + 12 * 60 * 60 * 1000).toISOString(),
+    };
+    memoryToken = session.token;
+    return session;
+  },
+
+  async getAdminState(): Promise<AdminPortalState> {
+    if (!detectedStaticMode) {
+      return fetchJson<AdminPortalState>('/api/admin/state');
+    }
+    if (!memoryToken) {
+      throw new Error('Admin authentication required.');
     }
     return loadLocalState();
   },

@@ -1,4 +1,4 @@
-import { Menu, Moon, Plus, Sun } from 'lucide-react';
+import { Globe, LogOut, Menu, Moon, Plus, Sun } from 'lucide-react';
 import type { AdminPageId } from '../types';
 import { ADMIN_PAGE_REGISTRY } from './PageRegistry';
 
@@ -8,6 +8,8 @@ interface TopBarProps {
   onToggleTheme: () => void;
   onOpenPublishRelease: () => void;
   onOpenMobileNav: () => void;
+  onOpenLanding: () => void;
+  onSignOut: () => void;
 }
 
 export function TopBar({
@@ -16,6 +18,8 @@ export function TopBar({
   onToggleTheme,
   onOpenPublishRelease,
   onOpenMobileNav,
+  onOpenLanding,
+  onSignOut,
 }: TopBarProps) {
   const current = ADMIN_PAGE_REGISTRY.find((p) => p.id === activePage);
 
@@ -43,7 +47,15 @@ export function TopBar({
         </div>
       </div>
 
-      <div className="flex items-center gap-2.5 shrink-0">
+      <div className="flex items-center gap-2 shrink-0">
+        <button
+          type="button"
+          onClick={onOpenLanding}
+          className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-[var(--border-hairline)] text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] transition-colors whitespace-nowrap shrink-0"
+        >
+          <Globe className="w-3.5 h-3.5" />
+          <span>Public Site</span>
+        </button>
         <button
           type="button"
           onClick={onToggleTheme}
@@ -51,6 +63,15 @@ export function TopBar({
           className="p-2 rounded-md border border-[var(--border-hairline)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] transition-colors"
         >
           {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+        </button>
+        <button
+          type="button"
+          onClick={onSignOut}
+          aria-label="Sign out"
+          title="Sign out"
+          className="p-2 rounded-md border border-[var(--border-hairline)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] transition-colors"
+        >
+          <LogOut className="w-4 h-4" />
         </button>
         <button
           type="button"
