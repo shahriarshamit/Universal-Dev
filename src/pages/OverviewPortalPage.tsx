@@ -1,6 +1,6 @@
 import { CheckCircle2, Copy, ExternalLink, Play, ShieldAlert } from 'lucide-react';
 import { useState } from 'react';
-import { api, formatTimestamp } from '../lib/api';
+import { api, formatTimestamp, isStaticPagesMode } from '../lib/api';
 import type {
   AdminPageId,
   ClientBootstrapResponse,
@@ -31,7 +31,11 @@ export function OverviewPortalPage({
   const [testing, setTesting] = useState<boolean>(false);
   const [copiedEndpoint, setCopiedEndpoint] = useState<string | null>(null);
 
-  const origin = typeof window !== 'undefined' ? window.location.origin : '';
+  const baseUrl =
+    typeof window !== 'undefined'
+      ? new URL('.', window.location.href).href.replace(/\/+$/, '')
+      : '';
+  const staticMode = isStaticPagesMode();
   const totalSdkVersions = (Object.keys(manifest.sdks) as SdkId[]).reduce(
     (sum, id) => sum + manifest.sdks[id].versions.length,
     0,
@@ -41,44 +45,43 @@ export function OverviewPortalPage({
   const endpoints = [
     {
       method: 'GET',
-      path: '/api/v1/manifest.json',
+      path: 'api/v1/manifest.json',
       purpose: 'Full SDK catalog, checksums, installation & runtime specs consumed by ManifestManager',
     },
     {
       method: 'GET',
-      path: '/api/v1/templates.json',
+      path: 'api/v1/templates.json',
       purpose: 'Declarative project creation steps consumed by TemplateManager',
     },
     {
       method: 'GET',
-      path: '/api/v1/tools.json',
+      path: 'api/v1/tools.json',
       purpose: 'Standalone & bundled tool definitions consumed by ToolManager',
     },
     {
       method: 'POST',
-      path: '/api/v1/client/bootstrap',
-      purpose: 'Desktop client startup gate checking min version, maintenance mode, and license',
+      path: 'api/v1/client/bootstrap',
+      purpose: staticMode
+        ? 'Live Express endpoint when self-hosted (simulated locally in GitHub Pages static mode)'
+        : 'Desktop client startup gate checking min version, maintenance mode, and license',
     },
     {
       method: 'POST',
-      path: '/api/v1/license/verify',
-      purpose: 'License key status check returning plan, expiry, and offline grace days',
+      path: 'api/v1/license/verify',
+      purpose: staticMode
+        ? 'Live Express endpoint when self-hosted (simulated locally in GitHub Pages static mode)'
+        : 'License key status check returning plan, expiry, and offline grace days',
     },
   ];
 
   const pythonSnippet = `import requests
 
-BASE_URL = "${origin}"
+BASE_URL = "${baseUrl}"
 
-boot = requests.post(
-    f"{BASE_URL}/api/v1/client/bootstrap",
-    json={"client_version": "${manifest.application.latest_version}", "platform": "windows", "license_key": "${licenses[0]?.key || ''}"},
-    timeout=10,
-).json()
-
-if boot["allowed"]:
-    manifest = requests.get(f"{BASE_URL}{boot['endpoints']['manifest']}", timeout=10).json()
-    templates = requests.get(f"{BASE_URL}{boot['endpoints']['templates']}", timeout=10).json()`;
+# Static JSON catalogs (works on both GitHub Pages & self-hosted Express)
+manifest = requests.get(f"{BASE_URL}/api/v1/manifest.json", timeout=10).json()
+templates = requests.get(f"{BASE_URL}/api/v1/templates.json", timeout=10).json()
+tools = requests.get(f"{BASE_URL}/api/v1/tools.json", timeout=10).json()`;
 
   const handleTestHandshake = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -165,13 +168,13 @@ if boot["allowed"]:
 
         <div className="divide-y divide-[var(--border-hairline)]">
           {endpoints.map((ep) => {
-            const fullUrl = `${origin}${ep.path}`;
+            const fullUrl = `${baseUrl}/${ep.path}`;
             return (
               <div key={ep.path} className="px-5 py-3.5 flex flex-col md:flex-row md:items-center justify-between gap-3">
                 <div className="min-w-0">
                   <div className="flex items-center gap-2.5 text-xs font-mono">
                     <span className="font-semibold text-[var(--accent)] w-10 shrink-0">{ep.method}</span>
-                    <span className="text-[var(--text-primary)] truncate">{ep.path}</span>
+                    <span className="text-[var(--text-primary)] truncate">/{ep.path}</span>
                   </div>
                   <p className="mt-1 text-xs text-[var(--text-secondary)]">{ep.purpose}</p>
                 </div>

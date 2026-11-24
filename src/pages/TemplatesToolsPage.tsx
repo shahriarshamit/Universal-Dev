@@ -1,4 +1,4 @@
-import { Plus, Trash2 } from 'lucide-react';
+import { Download, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { api } from '../lib/api';
 import type { EcosystemId, TemplateCatalog, ToolCatalog } from '../types';
@@ -66,21 +66,40 @@ export function TemplatesToolsPage({
           </p>
         </div>
 
-        <div className="flex items-center gap-1 p-1 rounded-lg bg-[var(--bg-surface)] border border-[var(--border-hairline)]">
-          {(['all', 'php', 'node', 'python', 'flutter'] as const).map((eco) => (
-            <button
-              key={eco}
-              type="button"
-              onClick={() => setEcoFilter(eco)}
-              className={`px-3 py-1.5 rounded-md text-xs font-medium whitespace-nowrap ${
-                ecoFilter === eco
-                  ? 'bg-[var(--accent)] text-white'
-                  : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-              }`}
-            >
-              {eco === 'all' ? 'All' : eco === 'node' ? 'Node.js' : eco.toUpperCase()}
-            </button>
-          ))}
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={() => {
+              const blob = new Blob([JSON.stringify(templates, null, 2)], { type: 'application/json' });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = 'templates.json';
+              a.click();
+              URL.revokeObjectURL(url);
+            }}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-[var(--border-hairline)] bg-[var(--bg-surface)] hover:bg-[var(--bg-elevated)] text-xs font-medium text-[var(--text-primary)]"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span>Export JSON</span>
+          </button>
+
+          <div className="flex items-center gap-1 p-1 rounded-lg bg-[var(--bg-surface)] border border-[var(--border-hairline)]">
+            {(['all', 'php', 'node', 'python', 'flutter'] as const).map((eco) => (
+              <button
+                key={eco}
+                type="button"
+                onClick={() => setEcoFilter(eco)}
+                className={`px-3 py-1.5 rounded-md text-xs font-medium whitespace-nowrap ${
+                  ecoFilter === eco
+                    ? 'bg-[var(--accent)] text-white'
+                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                }`}
+              >
+                {eco === 'all' ? 'All' : eco === 'node' ? 'Node.js' : eco.toUpperCase()}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 

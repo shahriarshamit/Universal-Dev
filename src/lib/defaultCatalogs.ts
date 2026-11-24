@@ -1,0 +1,689 @@
+import type {
+  ClientBootstrapResponse,
+  LicenseRecord,
+  LicenseVerifyResponse,
+  ManifestDocument,
+  TemplateCatalog,
+  ToolCatalog,
+} from '../types.ts';
+
+export function createDefaultManifest(): ManifestDocument {
+  return {
+    manifest_version: 2,
+    api_version: 1,
+    generated_at: '2026-11-24T03:00:00Z',
+    minimum_client_version: '0.6.5',
+    provider: 'Universal Dev Registry',
+    cdn: 'https://cdn.universaldev.io/sdks',
+    application: {
+      minimum_version: '0.6.0',
+      latest_version: '0.6.5',
+      download_url: 'https://cdn.universaldev.io/releases/UniversalDev-Setup-0.6.5-win64.exe',
+      update_required: false,
+      maintenance: false,
+      maintenance_message: '',
+    },
+    license: {
+      required: false,
+      offline_grace_days: 14,
+    },
+    sdks: {
+      php: {
+        id: 'php',
+        name: 'PHP',
+        category: 'ecosystem',
+        description: 'Managed PHP runtime (VS17 Thread Safe) for Laravel, WordPress, Symfony, and plain PHP.',
+        homepage: 'https://www.php.net',
+        license: 'PHP-3.01',
+        tags: ['web', 'backend', 'laravel', 'wordpress', 'symfony'],
+        default_version: '8.4.24',
+        versions: [
+          {
+            version: '8.4.24',
+            minimum_client: '0.6.5',
+            status: 'supported',
+            channel: 'stable',
+            recommended: true,
+            platform: 'windows',
+            architecture: 'x64',
+            thread_safe: true,
+            compiler: 'VS17',
+            filename: 'php-8.4.24-Win32-vs17-x64.zip',
+            download_url: 'https://windows.php.net/downloads/releases/php-8.4.24-Win32-vs17-x64.zip',
+            sha256: '4d7c1e9f8a2245b16a3f88d10e9a50d23c1b9e84c6f9b8c7d2e10a44b2c1d881',
+            size: 32418912,
+            release_date: '2026-10-28',
+            dependencies: [],
+            installation: {
+              installer_type: 'zip',
+              archive_type: 'zip',
+              extract: true,
+              strip_root_folder: false,
+              silent_arguments: [],
+              destination: 'sdk/php/8.4.24',
+            },
+            runtime: {
+              executable: 'php.exe',
+              working_directory: '.',
+              path_entries: ['.', 'ext'],
+              environment: { PHPRC: '.' },
+              verify: { args: ['-v'], contains: 'PHP 8.4.24' },
+              commands: [
+                { id: 'version', title: 'Check Version', args: ['-v'] },
+                { id: 'modules', title: 'Loaded Extensions', args: ['-m'] },
+              ],
+            },
+          },
+          {
+            version: '8.3.19',
+            minimum_client: '0.6.0',
+            status: 'supported',
+            channel: 'lts',
+            recommended: false,
+            platform: 'windows',
+            architecture: 'x64',
+            thread_safe: true,
+            compiler: 'VS16',
+            filename: 'php-8.3.19-Win32-vs16-x64.zip',
+            download_url: 'https://windows.php.net/downloads/releases/php-8.3.19-Win32-vs16-x64.zip',
+            sha256: '8b2c4e1a9d0034f56b7e21c45d89a01f234b56c78d90e12f34a56b78c90d12e3',
+            size: 31104200,
+            release_date: '2026-09-15',
+            dependencies: [],
+            installation: {
+              installer_type: 'zip',
+              archive_type: 'zip',
+              extract: true,
+              strip_root_folder: false,
+              silent_arguments: [],
+              destination: 'sdk/php/8.3.19',
+            },
+            runtime: {
+              executable: 'php.exe',
+              working_directory: '.',
+              path_entries: ['.', 'ext'],
+              environment: { PHPRC: '.' },
+              verify: { args: ['-v'], contains: 'PHP 8.3.19' },
+              commands: [{ id: 'version', title: 'Check Version', args: ['-v'] }],
+            },
+          },
+          {
+            version: '8.2.28',
+            minimum_client: '0.6.0',
+            status: 'deprecated',
+            channel: 'stable',
+            recommended: false,
+            platform: 'windows',
+            architecture: 'x64',
+            thread_safe: true,
+            compiler: 'VS16',
+            filename: 'php-8.2.28-Win32-vs16-x64.zip',
+            download_url: 'https://windows.php.net/downloads/releases/php-8.2.28-Win32-vs16-x64.zip',
+            sha256: '71a92d0e4f8c33b21e54d6f89a01c23e45f67890a1b2c3d4e5f60718293a4b5c',
+            size: 29874000,
+            release_date: '2026-04-11',
+            dependencies: [],
+            installation: {
+              installer_type: 'zip',
+              archive_type: 'zip',
+              extract: true,
+              strip_root_folder: false,
+              silent_arguments: [],
+              destination: 'sdk/php/8.2.28',
+            },
+            runtime: {
+              executable: 'php.exe',
+              working_directory: '.',
+              path_entries: ['.', 'ext'],
+              environment: { PHPRC: '.' },
+              verify: { args: ['-v'], contains: 'PHP 8.2.28' },
+              commands: [{ id: 'version', title: 'Check Version', args: ['-v'] }],
+            },
+          },
+        ],
+      },
+      node: {
+        id: 'node',
+        name: 'Node.js',
+        category: 'ecosystem',
+        description: 'Isolated Node.js JavaScript runtime with bundled npm & npx.',
+        homepage: 'https://nodejs.org',
+        license: 'MIT',
+        tags: ['javascript', 'typescript', 'express', 'react', 'nextjs', 'nestjs'],
+        default_version: '24.5.0',
+        versions: [
+          {
+            version: '24.5.0',
+            minimum_client: '0.6.5',
+            status: 'supported',
+            channel: 'stable',
+            recommended: true,
+            platform: 'windows',
+            architecture: 'x64',
+            filename: 'node-v24.5.0-win-x64.zip',
+            download_url: 'https://nodejs.org/dist/v24.5.0/node-v24.5.0-win-x64.zip',
+            sha256: 'a91f30c2e8b471d0f92a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f81',
+            size: 31457280,
+            release_date: '2026-10-18',
+            dependencies: [],
+            installation: {
+              installer_type: 'zip',
+              archive_type: 'zip',
+              extract: true,
+              strip_root_folder: true,
+              silent_arguments: [],
+              destination: 'sdk/node/24.5.0',
+            },
+            runtime: {
+              executable: 'node.exe',
+              working_directory: '.',
+              path_entries: ['.'],
+              environment: {},
+              verify: { args: ['-v'], contains: 'v24.5.0' },
+              commands: [
+                { id: 'version', title: 'Check Version', args: ['-v'] },
+                { id: 'npm', title: 'Check npm', args: ['node_modules/npm/bin/npm-cli.js', '-v'] },
+              ],
+            },
+          },
+          {
+            version: '22.15.0',
+            minimum_client: '0.6.0',
+            status: 'supported',
+            channel: 'lts',
+            recommended: false,
+            platform: 'windows',
+            architecture: 'x64',
+            filename: 'node-v22.15.0-win-x64.zip',
+            download_url: 'https://nodejs.org/dist/v22.15.0/node-v22.15.0-win-x64.zip',
+            sha256: 'c42d18e9b701a52f3e8c9d0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f809123',
+            size: 30112400,
+            release_date: '2026-08-04',
+            dependencies: [],
+            installation: {
+              installer_type: 'zip',
+              archive_type: 'zip',
+              extract: true,
+              strip_root_folder: true,
+              silent_arguments: [],
+              destination: 'sdk/node/22.15.0',
+            },
+            runtime: {
+              executable: 'node.exe',
+              working_directory: '.',
+              path_entries: ['.'],
+              environment: {},
+              verify: { args: ['-v'], contains: 'v22.15.0' },
+              commands: [{ id: 'version', title: 'Check Version', args: ['-v'] }],
+            },
+          },
+        ],
+      },
+      python: {
+        id: 'python',
+        name: 'Python',
+        category: 'ecosystem',
+        description: 'Isolated Python runtime with pip & venv for Django, Flask, and FastAPI.',
+        homepage: 'https://www.python.org',
+        license: 'PSF-2.0',
+        tags: ['python', 'django', 'flask', 'fastapi'],
+        default_version: '3.14.0',
+        versions: [
+          {
+            version: '3.14.0',
+            minimum_client: '0.6.5',
+            status: 'supported',
+            channel: 'stable',
+            recommended: true,
+            platform: 'windows',
+            architecture: 'x64',
+            filename: 'python-3.14.0-embed-amd64.zip',
+            download_url: 'https://www.python.org/ftp/python/3.14.0/python-3.14.0-embed-amd64.zip',
+            sha256: 'e34b7a19c8d045e12f3a4b5c6d7e8f90123456789abcdef0123456789abcdef0',
+            size: 26843545,
+            release_date: '2026-10-07',
+            dependencies: [],
+            installation: {
+              installer_type: 'zip',
+              archive_type: 'zip',
+              extract: true,
+              strip_root_folder: false,
+              silent_arguments: [],
+              destination: 'sdk/python/3.14.0',
+            },
+            runtime: {
+              executable: 'python.exe',
+              working_directory: '.',
+              path_entries: ['.', 'Scripts'],
+              environment: { PYTHONDONTWRITEBYTECODE: '1' },
+              verify: { args: ['--version'], contains: 'Python 3.14.0' },
+              commands: [
+                { id: 'version', title: 'Check Version', args: ['--version'] },
+                { id: 'pip', title: 'Check pip', args: ['-m', 'pip', '--version'] },
+              ],
+            },
+          },
+        ],
+      },
+      flutter: {
+        id: 'flutter',
+        name: 'Flutter',
+        category: 'ecosystem',
+        description: 'Multi-platform Flutter & Dart SDK for Mobile, Web, and Desktop targets.',
+        homepage: 'https://flutter.dev',
+        license: 'BSD-3-Clause',
+        tags: ['flutter', 'dart', 'mobile', 'web', 'desktop'],
+        default_version: '3.35.1',
+        versions: [
+          {
+            version: '3.35.1',
+            minimum_client: '0.6.5',
+            status: 'supported',
+            channel: 'stable',
+            recommended: true,
+            platform: 'windows',
+            architecture: 'x64',
+            filename: 'flutter_windows_3.35.1-stable.zip',
+            download_url: 'https://storage.googleapis.com/flutter_infra_release/releases/stable/windows/flutter_windows_3.35.1-stable.zip',
+            sha256: '9d8e7c6b5a4f3e2d1c0b9a8f7e6d5c4b3a2f1e0d9c8b7a6f5e4d3c2b1a0f9e8d',
+            size: 1124073472,
+            release_date: '2026-10-12',
+            dependencies: ['git'],
+            installation: {
+              installer_type: 'zip',
+              archive_type: 'zip',
+              extract: true,
+              strip_root_folder: true,
+              silent_arguments: [],
+              destination: 'sdk/flutter/3.35.1',
+            },
+            runtime: {
+              executable: 'bin/flutter.bat',
+              working_directory: '.',
+              path_entries: ['bin', 'bin/cache/dart-sdk/bin'],
+              environment: { FLUTTER_SUPPRESS_ANALYTICS: 'true' },
+              verify: { args: ['--version'], contains: 'Flutter 3.35.1' },
+              commands: [
+                { id: 'version', title: 'Check Version', args: ['--version'] },
+                { id: 'doctor', title: 'Run Doctor', args: ['doctor'] },
+              ],
+            },
+          },
+        ],
+      },
+      git: {
+        id: 'git',
+        name: 'Git (Portable)',
+        category: 'tool',
+        description: 'Portable Git toolchain required by Flutter and Composer.',
+        homepage: 'https://git-scm.com',
+        license: 'GPL-2.0',
+        tags: ['git', 'vcs', 'tool'],
+        default_version: '2.51.0',
+        versions: [
+          {
+            version: '2.51.0',
+            minimum_client: '0.6.5',
+            status: 'supported',
+            channel: 'stable',
+            recommended: true,
+            platform: 'windows',
+            architecture: 'x64',
+            filename: 'PortableGit-2.51.0-64-bit.zip',
+            download_url: 'https://cdn.universaldev.io/sdks/git/PortableGit-2.51.0-64-bit.zip',
+            sha256: '1a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f809',
+            size: 56623104,
+            release_date: '2026-09-30',
+            dependencies: [],
+            installation: {
+              installer_type: 'zip',
+              archive_type: 'zip',
+              extract: true,
+              strip_root_folder: false,
+              silent_arguments: [],
+              destination: 'sdk/git/2.51.0',
+            },
+            runtime: {
+              executable: 'bin/git.exe',
+              working_directory: '.',
+              path_entries: ['bin', 'cmd'],
+              environment: {},
+              verify: { args: ['--version'], contains: 'git version 2.51.0' },
+              commands: [{ id: 'version', title: 'Check Version', args: ['--version'] }],
+            },
+          },
+        ],
+      },
+      composer: {
+        id: 'composer',
+        name: 'Composer',
+        category: 'tool',
+        description: 'PHP dependency manager (composer.phar) paired with managed PHP.',
+        homepage: 'https://getcomposer.org',
+        license: 'MIT',
+        tags: ['php', 'composer', 'package-manager'],
+        default_version: '2.8.11',
+        versions: [
+          {
+            version: '2.8.11',
+            minimum_client: '0.6.5',
+            status: 'supported',
+            channel: 'stable',
+            recommended: true,
+            platform: 'cross-platform',
+            architecture: 'noarch',
+            filename: 'composer-2.8.11.phar',
+            download_url: 'https://getcomposer.org/download/2.8.11/composer.phar',
+            sha256: '5f4e3d2c1b0a9f8e7d6c5b4a3f2e1d0c9b8a7f6e5d4c3b2a1f0e9d8c7b6a5f4e',
+            size: 3145728,
+            release_date: '2026-10-01',
+            dependencies: ['php'],
+            installation: {
+              installer_type: 'phar',
+              archive_type: 'none',
+              extract: false,
+              strip_root_folder: false,
+              silent_arguments: [],
+              destination: 'sdk/composer/2.8.11',
+            },
+            runtime: {
+              executable: 'composer.phar',
+              working_directory: '.',
+              path_entries: ['.'],
+              environment: {},
+              verify: { args: ['--version'], contains: 'Composer version 2.8.11' },
+              commands: [{ id: 'version', title: 'Check Version', args: ['--version'] }],
+            },
+          },
+        ],
+      },
+    },
+  };
+}
+
+export function createDefaultTemplates(): TemplateCatalog {
+  return {
+    version: 2,
+    generated_at: '2026-11-24T03:00:00Z',
+    templates: [
+      {
+        id: 'laravel',
+        sdk: 'php',
+        name: 'Laravel',
+        description: 'Full-stack PHP framework scaffolded via Composer.',
+        steps: [
+          { tool: 'composer', label: 'Create Laravel project', arguments: ['create-project', 'laravel/laravel', '{project_path}'] },
+          { tool: 'php', label: 'Generate app key', arguments: ['artisan', 'key:generate'] },
+        ],
+      },
+      {
+        id: 'wordpress',
+        sdk: 'php',
+        name: 'WordPress',
+        description: 'LocalWP-style WordPress site with database & local SSL.',
+        steps: [
+          { tool: 'php', label: 'Configure wp-config.php', arguments: ['-r', 'echo "Configured";'] },
+        ],
+      },
+      {
+        id: 'symfony',
+        sdk: 'php',
+        name: 'Symfony',
+        description: 'Modular PHP application using Composer Flex.',
+        steps: [
+          { tool: 'composer', label: 'Create Symfony skeleton', arguments: ['create-project', 'symfony/skeleton', '{project_path}'] },
+        ],
+      },
+      {
+        id: 'plain-php',
+        sdk: 'php',
+        name: 'Plain PHP',
+        description: 'Minimal PHP workspace without external framework dependencies.',
+        steps: [{ tool: 'php', label: 'Verify PHP runtime', arguments: ['-v'] }],
+      },
+      {
+        id: 'express',
+        sdk: 'node',
+        name: 'Express',
+        description: 'REST API service using Node.js and Express.',
+        steps: [
+          { tool: 'npm', label: 'Initialize package.json', arguments: ['init', '-y'] },
+          { tool: 'npm', label: 'Install Express', arguments: ['install', 'express'] },
+        ],
+      },
+      {
+        id: 'react',
+        sdk: 'node',
+        name: 'React',
+        description: 'Vite + React TypeScript single-page application.',
+        steps: [
+          { tool: 'npm', label: 'Scaffold Vite React app', arguments: ['create', 'vite@latest', '{project_path}', '--', '--template', 'react-ts'] },
+          { tool: 'npm', label: 'Install dependencies', arguments: ['install'] },
+        ],
+      },
+      {
+        id: 'nextjs',
+        sdk: 'node',
+        name: 'Next.js',
+        description: 'App Router full-stack React framework.',
+        steps: [
+          { tool: 'npx', label: 'Create Next.js app', arguments: ['create-next-app@latest', '{project_path}', '--ts', '--yes'] },
+        ],
+      },
+      {
+        id: 'nestjs',
+        sdk: 'node',
+        name: 'NestJS',
+        description: 'TypeScript backend framework with modular DI container.',
+        steps: [
+          { tool: 'npx', label: 'Scaffold NestJS project', arguments: ['@nestjs/cli', 'new', '{project_name}', '--skip-git'] },
+        ],
+      },
+      {
+        id: 'django',
+        sdk: 'python',
+        name: 'Django',
+        description: 'Full-featured Python web framework inside an isolated venv.',
+        steps: [
+          { tool: 'venv', label: 'Create virtual environment', arguments: ['-m', 'venv', '{project_path}/.venv'] },
+          { tool: 'pip', label: 'Install Django', arguments: ['install', 'django'] },
+        ],
+      },
+      {
+        id: 'flask',
+        sdk: 'python',
+        name: 'Flask',
+        description: 'Lightweight Python WSGI service inside an isolated venv.',
+        steps: [
+          { tool: 'venv', label: 'Create virtual environment', arguments: ['-m', 'venv', '{project_path}/.venv'] },
+          { tool: 'pip', label: 'Install Flask', arguments: ['install', 'flask'] },
+        ],
+      },
+      {
+        id: 'fastapi',
+        sdk: 'python',
+        name: 'FastAPI',
+        description: 'Modern ASGI Python API with Uvicorn.',
+        steps: [
+          { tool: 'venv', label: 'Create virtual environment', arguments: ['-m', 'venv', '{project_path}/.venv'] },
+          { tool: 'pip', label: 'Install FastAPI & Uvicorn', arguments: ['install', 'fastapi', 'uvicorn'] },
+        ],
+      },
+      {
+        id: 'flutter-mobile',
+        sdk: 'flutter',
+        name: 'Flutter Mobile',
+        description: 'Android & iOS Flutter application.',
+        steps: [
+          { tool: 'flutter', label: 'Create mobile targets', arguments: ['create', '--platforms=android,ios', '{project_path}'] },
+        ],
+      },
+      {
+        id: 'flutter-web',
+        sdk: 'flutter',
+        name: 'Flutter Web',
+        description: 'Web target compiled with Dart & Flutter.',
+        steps: [
+          { tool: 'flutter', label: 'Create web target', arguments: ['create', '--platforms=web', '{project_path}'] },
+        ],
+      },
+      {
+        id: 'flutter-desktop',
+        sdk: 'flutter',
+        name: 'Flutter Desktop',
+        description: 'Windows, macOS, and Linux Flutter desktop target.',
+        steps: [
+          { tool: 'flutter', label: 'Create desktop targets', arguments: ['create', '--platforms=windows,linux,macos', '{project_path}'] },
+        ],
+      },
+    ],
+  };
+}
+
+export function createDefaultTools(): ToolCatalog {
+  return {
+    version: 1,
+    tools: [
+      { id: 'composer', name: 'Composer', kind: 'standalone', sdk_id: 'composer', executable: 'composer.phar', description: 'PHP dependency manager' },
+      { id: 'git', name: 'Git', kind: 'standalone', sdk_id: 'git', executable: 'bin/git.exe', description: 'Portable Git toolchain' },
+      { id: 'npm', name: 'npm', kind: 'bundled', sdk_id: 'node', executable: 'npm.cmd', description: 'Node package manager' },
+      { id: 'npx', name: 'npx', kind: 'bundled', sdk_id: 'node', executable: 'npx.cmd', description: 'Node package runner' },
+      { id: 'pip', name: 'pip', kind: 'bundled', sdk_id: 'python', executable: 'Scripts/pip.exe', description: 'Python package installer' },
+      { id: 'venv', name: 'venv', kind: 'bundled', sdk_id: 'python', executable: 'python.exe -m venv', description: 'Python virtual environment module' },
+      { id: 'dart', name: 'Dart', kind: 'bundled', sdk_id: 'flutter', executable: 'bin/dart.bat', description: 'Bundled Dart SDK' },
+    ],
+  };
+}
+
+export function createDefaultLicenses(): LicenseRecord[] {
+  return [
+    {
+      key: 'UDEV-PRO-2026-94F1',
+      owner: 'shahriar.shamit@gmail.com',
+      plan: 'Pro',
+      status: 'active',
+      offline_grace_days: 14,
+      issued_at: '2026-10-01T00:00:00Z',
+      expires_at: '2027-10-01T00:00:00Z',
+      last_verified_at: '2026-11-24T01:00:00Z',
+    },
+    {
+      key: 'UDEV-TEAM-2026-41C8',
+      owner: 'platform-ops@acme.local',
+      plan: 'Team',
+      status: 'active',
+      offline_grace_days: 30,
+      issued_at: '2026-11-01T00:00:00Z',
+      expires_at: '2027-11-01T00:00:00Z',
+      last_verified_at: '2026-11-23T19:12:00Z',
+    },
+  ];
+}
+
+export function compareSemver(a: string, b: string): number {
+  const pa = a.split('.').map((n) => Number.parseInt(n, 10) || 0);
+  const pb = b.split('.').map((n) => Number.parseInt(n, 10) || 0);
+  const len = Math.max(pa.length, pb.length, 3);
+  for (let i = 0; i < len; i++) {
+    const diff = (pa[i] ?? 0) - (pb[i] ?? 0);
+    if (diff !== 0) return diff;
+  }
+  return 0;
+}
+
+export function evaluateClientBootstrapLocal(
+  manifest: ManifestDocument,
+  licenses: LicenseRecord[],
+  input: { client_version?: string; license_key?: string },
+): ClientBootstrapResponse {
+  const clientVer = (input.client_version || '0.6.5').trim();
+  const minVer = manifest.application.minimum_version;
+  const latestVer = manifest.application.latest_version;
+  const belowMin = compareSemver(clientVer, minVer) < 0;
+  const updateAvailable = compareSemver(clientVer, latestVer) < 0;
+  const updateRequired = Boolean(manifest.application.update_required || belowMin);
+  const maintenance = Boolean(manifest.application.maintenance);
+
+  let licenseStatus: ClientBootstrapResponse['license_status'] = 'not_required';
+  let licenseValid = !manifest.license.required;
+
+  const key = (input.license_key || '').trim();
+  if (manifest.license.required || key) {
+    if (!key) {
+      licenseStatus = 'missing';
+      licenseValid = false;
+    } else {
+      const rec = licenses.find((l) => l.key === key);
+      if (!rec) {
+        licenseStatus = 'invalid';
+        licenseValid = false;
+      } else if (rec.status === 'revoked') {
+        licenseStatus = 'revoked';
+        licenseValid = false;
+      } else if (new Date(rec.expires_at).getTime() < Date.now() || rec.status === 'expired') {
+        licenseStatus = 'expired';
+        licenseValid = false;
+      } else {
+        licenseStatus = 'valid';
+        licenseValid = true;
+      }
+    }
+  }
+
+  const allowed = !maintenance && !updateRequired && (licenseValid || !manifest.license.required);
+  return {
+    allowed,
+    client_version: clientVer,
+    minimum_version: minVer,
+    latest_version: latestVer,
+    desktop_download_url: manifest.application.download_url,
+    update_available: updateAvailable,
+    update_required: updateRequired,
+    maintenance,
+    maintenance_message: manifest.application.maintenance_message,
+    license_required: manifest.license.required,
+    license_valid: licenseValid,
+    license_status: licenseStatus,
+    offline_grace_days: manifest.license.offline_grace_days,
+    endpoints: {
+      manifest: 'api/v1/manifest.json',
+      templates: 'api/v1/templates.json',
+      tools: 'api/v1/tools.json',
+      license_verify: 'api/v1/license/verify',
+    },
+  };
+}
+
+export function verifyLicenseLocal(
+  manifest: ManifestDocument,
+  licenses: LicenseRecord[],
+  rawKey: string,
+): LicenseVerifyResponse {
+  const key = (rawKey || '').trim().toUpperCase();
+  const now = new Date().toISOString();
+  const rec = licenses.find((l) => l.key === key);
+  if (!rec) {
+    return {
+      valid: false,
+      key,
+      status: 'not_found',
+      plan: null,
+      owner: null,
+      offline_grace_days: manifest.license.offline_grace_days,
+      expires_at: null,
+      verified_at: now,
+    };
+  }
+  const expired = new Date(rec.expires_at).getTime() < Date.now() || rec.status === 'expired';
+  const valid = rec.status === 'active' && !expired;
+  return {
+    valid,
+    key: rec.key,
+    status: expired ? 'expired' : rec.status,
+    plan: rec.plan,
+    owner: rec.owner,
+    offline_grace_days: rec.offline_grace_days,
+    expires_at: rec.expires_at,
+    verified_at: now,
+  };
+}
